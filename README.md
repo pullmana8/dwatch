@@ -1,14 +1,14 @@
 <img src="assets/logo.png" alt="logo" width="120" height="120" align="right" />
 #DWatch
-[![Build Status](https://travis-ci.org/Mercateo/dwatch.svg?branch=master)](https://travis-ci.org/Mercateo/dwatch)
-[![Build status](https://ci.appveyor.com/api/projects/status/did6covia0c4j0hl/branch/master?svg=true)](https://ci.appveyor.com/project/otbe/dwatch/branch/master)
-[![Coverage Status](https://coveralls.io/repos/github/Mercateo/dwatch/badge.svg?branch=master)](https://coveralls.io/github/Mercateo/dwatch?branch=master)
+[![Build Status](https://travis-ci.org/Mercateo/dwatch.svg?branch=master)](https://travis-ci.org/Mercateo/dwatch) [![Build status](https://ci.appveyor.com/api/projects/status/did6covia0c4j0hl/branch/master?svg=true)](https://ci.appveyor.com/project/otbe/dwatch/branch/master) [![Coverage Status](https://coveralls.io/repos/github/Mercateo/dwatch/badge.svg?branch=master)](https://coveralls.io/github/Mercateo/dwatch?branch=master)
 
 This is a very basic productivity tool for managing your docker containers, images and networks. It supports your local docker
 installation just as your swarm cluster. Its available for OS X (as .dmg), Linux (as .deb) and Windows (as .exe). If you're interested, please have a look
 at the release page.
 
 If you find bugs please file an issue.
+
+<img src="assets/screenshot_1.png" alt="Screenshot dashboard" width="33%"/> <img src="assets/screenshot_2.png" alt="Screenshot containers" width="33%"/> <img src="assets/screenshot_3.png" alt="Screenshot container detail" width="32%"/>
 
 ##Motivation
 Im a big fan of docker and how it simplifies my daily work. No more ```npm i``` for 50+ projects, you know what I mean :)
