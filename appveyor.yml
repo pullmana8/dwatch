@@ -4,8 +4,8 @@ platform:
   - x64
 
 cache:
-  - node_modules
-  - '%APPDATA%\npm-cache'
+  - node_modules -> npm-shrinkwrap.json
+  - '%APPDATA%\npm-cache' -> npm-shrinkwrap.json
   - '%USERPROFILE%\.electron'
 
 init:
