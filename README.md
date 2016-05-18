@@ -4,7 +4,7 @@
 
 This is a very basic productivity tool for managing your docker containers, images and networks. It supports your local docker
 installation just as your swarm cluster. Its available for OS X (as .dmg), Linux (as .deb) and Windows (as .exe). If you're interested, please have a look
-at the release page.
+at the [release page](https://github.com/Mercateo/dwatch/releases).
 
 If you find bugs please file an issue.
 
