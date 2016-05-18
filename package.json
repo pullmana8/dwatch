@@ -5,10 +5,10 @@
   "main": "index.js",
   "author": {
     "name": "Benjamin Otto",
-    "email": "benjamin.otto@style-systems.de"
+    "email": "benjamin.otto@mercateo.com"
   },
-  "license": "MIT",
-  "homepage": "https://github.com/otbe/dwatch",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Mercateo/dwatch",
   "scripts": {
     "postinstall": "typings install",
     "build": "webpack --config webpack-dev.config.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/otbe/dwatch.git"
+    "url": "https://github.com/Mercateo/dwatch.git"
   },
   "productName": "DWatch",
   "build": {
