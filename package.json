@@ -34,7 +34,7 @@
   "build": {
     "app-bundle-id": "com.mercateo.dwatch",
     "app-category-type": "public.app-category.developer-tools",
-    "iconUrl": "https://oc.style-systems.de/index.php/s/YzOZJiotM5guUmk"
+    "iconUrl": "https://raw.githubusercontent.com/Mercateo/dwatch/master/assets/icon.ico"
   },
   "directories": {
     "buildResources": "assets"

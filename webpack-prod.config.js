@@ -13,6 +13,7 @@ conf.module.loaders.push({
 
 conf.plugins.push(new webpack.DefinePlugin({
   __PRODUCTION__: true,
+  __DEVELOP__: false,
   __VERSION__: JSON.stringify(version)
 }));
 

@@ -48,6 +48,6 @@ export class AppDrawer extends Component<void, {}> {
   }
 
   private openGithubRepo = () => {
-    shell.openExternal('https://github.com/otbe');
+    shell.openExternal('https://github.com/Mercateo/dwatch');
   }
 }
