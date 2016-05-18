@@ -5,7 +5,7 @@ platform:
 
 cache:
   - node_modules -> npm-shrinkwrap.json
-  - '%APPDATA%\npm-cache' -> npm-shrinkwrap.json
+  - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
 
 init:
