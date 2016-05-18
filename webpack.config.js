@@ -67,7 +67,8 @@ module.exports = {
     new ExtractTextPlugin('styles_[hash].css', {
       allChunks: true
     }),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    require('webpack-fail-plugin')
   ],
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.

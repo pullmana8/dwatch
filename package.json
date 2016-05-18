@@ -20,7 +20,7 @@
     "watch": "npm run build && webpack-dev-server --config webpack-dev.config.js",
     "start": "electron .",
     "build-release": "webpack --config webpack-prod.config.js",
-    "dist-all": "npm run test && npm run build-release && build --platform=all --arch=x64",
+    "dist:all": "npm run test && npm run build-release && build --platform=all --arch=x64",
     "dist": "build",
     "test": "webpack --config webpack-test.config.js && karma start && remap-istanbul -i generated/coverage.json > generated/coverage-final.json && node scripts/generate-coverage.js text",
     "coverage-html": "npm run test && node scripts/generate-coverage.js html",
@@ -81,11 +81,12 @@
     "remap-istanbul": "^0.6.3",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.2",
-    "typescript": "^1.9.0-dev.20160514",
+    "typescript": "^1.8.10",
     "typings": "^1.0.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1",
+    "webpack-fail-plugin": "^1.0.4",
     "webpack-node-externals": "^1.0.0"
   }
 }
