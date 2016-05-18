@@ -36,7 +36,6 @@ before_install:
 
 install:
   - nvm install 5
-  - npm install npm -g
   - npm i
 
 script:
