@@ -1,0 +1,54 @@
+osx_image: xcode7.3
+
+sudo: required
+dist: trusty
+
+language: c
+
+matrix:
+  include:
+    - os: linux
+      env: CC=clang CXX=clang++ npm_config_clang=1
+      compiler: clang
+    - os: osx
+
+cache:
+  directories:
+  - node_modules
+  - $HOME/.electron
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.7
+    packages:
+      - libgnome-keyring-dev
+      - xvfb
+      - icnsutils
+      - clang-3.7
+      - graphicsmagick
+      - xz-utils
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=":99.0"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 & fi
+
+install:
+  - nvm install 5
+  - npm install npm -g
+  - npm i
+
+script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run coverage-lcovonly; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run test; fi
+
+after_success:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
+
+deploy:
+  provider: script
+  script: npm run build-release && npm run dist
+  skip_cleanup: true
+  on:
+    branch: master

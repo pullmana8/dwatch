@@ -1,0 +1,20 @@
+.demoNavigation {
+  flex-grow: 1;
+}
+.demoLayout .demoNavigation .navigationLink {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  color: #ffffff;
+  font-weight: 500;
+}
+.demoLayout .demoNavigation .navigationLink:hover {
+  background-color: #00BCD4;
+  color: #ffffff;
+}
+
+.demoNavigation .navigationLink .navigationIcon {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.56);
+  margin-right: 32px;
+}

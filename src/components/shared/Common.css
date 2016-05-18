@@ -1,0 +1,37 @@
+.unstyledList {
+  list-style:none;
+  padding: 0;
+  margin: 0;
+}
+
+.inlineList {
+  composes: unstyledList;
+}
+
+.inlineList > li {
+  display: inline;
+  margin-right: 10px;
+}
+
+.flexActionBar  {
+  display: flex;
+  box-sizing:border-box;
+  align-items: center;
+}
+
+.fullWidthTextField {
+  width: 100%;
+}
+
+.fullWidthTable {
+  width: 100%;
+}
+
+.fixedLayoutTable {
+  table-layout:fixed;
+}
+
+.wrap {
+  word-wrap: break-word;
+  white-space: normal;
+}
