@@ -4,9 +4,7 @@ platform:
   - x64
 
 cache:
-  - node_modules -> npm-shrinkwrap.json
-  - '%APPDATA%\npm-cache'
-  - '%USERPROFILE%\.electron'
+  - node_modules
 
 init:
   - git config --global core.autocrlf input
