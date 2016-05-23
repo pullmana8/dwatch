@@ -43,13 +43,13 @@ export class ContainerStore  {
   async loadContainer (containerId: string): Promise<void> {
     try {
       const container = new ContainerModel(await this.docker.getContainer(containerId));
-      this.containers.set(containerId, container);
+      this.containers.set(container.id, container);
     } catch (e) {
       throw new Error('Container not found.');
     }
   }
 
-  async removeContainer (containerId: string) {
+  async removeContainer (containerId: string): Promise<void> {
     const container = this.containers.get(containerId);
 
     if (container == null) {

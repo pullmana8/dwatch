@@ -38,6 +38,33 @@ export function normalizeContainerName (name: string): string {
   return name.replace('/', '');
 }
 
+/**
+ * Normalizes a docker image id (removes sha256 prefix)
+ * @param imageId
+ * @returns {string}
+ */
+export function normalizeImageId(imageId: string): string {
+  return imageId.replace('sha256:', '');
+}
+
+/**
+ * Parses name and tags out of `repoTags`. Something like:
+ * [ 'test:0.15', 'test:latest' ] -> { name: 'test', tags: [ '0.15', 'latest' ] }
+ * @param repoTags
+ * @returns { name: string, tags: Array<string> }
+ */
+export function parseRepoTags(repoTags: Array<string>): { name: string, tags: Array<string> } {
+  if(repoTags == null || repoTags.length === 0) {
+    return null;
+  }
+  
+  return {
+    name: repoTags[0].split(':')[0],
+    tags: repoTags.map(repoTag => repoTag.split(':')[1])
+  }; 
+  
+}
+
 export function parseLocale (locale: LOCALE): {fullLocale: string, country: string, language: string} {
   let [ language, country ] = LOCALE[ locale ]
     .split('_');

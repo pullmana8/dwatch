@@ -27,6 +27,17 @@ export interface Version {
   BuildTime: Date;
 }
 
+export interface SummarizedImage {
+  RepoTags: Array<string>;
+  Id: string;
+  Created: Date;
+  Size: number;
+  VirtualSize: number;
+  Labels: {
+    [key: string]: string;
+  };
+}
+
 export interface SummarizedContainer {
   Command: string;
   Created: number;
@@ -47,8 +58,8 @@ export interface TopModel {
 }
 
 export interface DockerEvent {
-  Action: 'create' | 'attach' | 'connect' | 'start' | 'resize' | 'kill' | 'die' | 'disconnect' | 'destroy' | 'top' | 'pause' | 'unpause';
-  Type: 'container' | 'network';
+  Action: 'create' | 'attach' | 'connect' | 'start' | 'resize' | 'kill' | 'die' | 'disconnect' | 'destroy' | 'top' | 'pause' | 'unpause' | 'pull' | 'untag' | 'delete';
+  Type: 'container' | 'network' | 'image';
   from: string
   id: string;
   status: string;
@@ -56,7 +67,7 @@ export interface DockerEvent {
 }
 
 export interface DockerSwarmEvent  {
-  status: 'create' | 'attach' | 'connect' | 'start' | 'resize' | 'kill' | 'die' | 'disconnect' | 'destroy' | 'top' | 'pause' | 'unpause';
+  status: 'create' | 'attach' | 'connect' | 'start' | 'resize' | 'kill' | 'die' | 'disconnect' | 'destroy' | 'top' | 'pause' | 'unpause' | 'pull' | 'untag' | 'delete';
   id: string;
   from: string;
   time: number;
@@ -218,6 +229,116 @@ export class Container {
   }
 }
 
+export class Image {
+  Id: string;
+  Container: string;
+  Comment: string;
+  Os: string;
+  Architecture: string;
+  Parent: string;
+
+  ContainerConfig: {
+    Tty: boolean;
+    Hostname: string;
+    Volumes: {
+      [key: string]: {
+        [key: string]: string;
+      };
+    };
+    Domainname: string;
+    AttachStdout: boolean;
+    PublishService: string;
+    AttachStdin: boolean;
+    OpenStdin: boolean;
+    StdinOnce: boolean;
+    NetworkDisabled: boolean;
+    OnBuild: Array<string>;
+    Image: string;
+    User: string;
+    WorkingDir: string;
+    Entrypoint: Array<string>;
+    MacAddress: string;
+    AttachStderr: boolean;
+    Labels: {
+      [key: string]: string
+    },
+    Env: Array<string>;
+    ExposedPorts: Object;
+    Cmd: Array<string>;
+  };
+
+  DockerVersion: string;
+  VirtualSize: number;
+  Size: number;
+  Author: string;
+  Created: string;
+
+  // "GraphDriver" : {
+  //   "Name" : "aufs",
+  //   "Data" : null
+  // },
+
+  // "RepoDigests" : [
+  //   "localhost:5000/test/busybox/example@sha256:cbbf2f9a99b47fc460d422812b6a5adff7dfee951d8fa2e4a98caa0382cfbdbf"
+  //   ],
+
+  RepoTags: Array<string>;
+
+  Config: {
+    Image: string;
+    NetworkDisabled: boolean;
+    OnBuild: Array<string>;
+    StdinOnce: boolean;
+    PublishService: string;
+    AttachStdin: boolean;
+    OpenStdin: boolean;
+    Domainname: string;
+    AttachStdout: boolean;
+    Tty: boolean;
+    Hostname: string;
+    Volumes: {
+      [key: string]: {
+        [key: string]: string;
+      };
+    };
+    Cmd: Array<string>;
+    ExposedPorts: Object;
+    Env: Array<string>;
+    Labels: {
+      [key: string]: string;
+    };
+    Entrypoint: Array<string>;
+    MacAddress: string;
+    AttachStderr: boolean;
+    WorkingDir: string;
+    User: string;
+  };
+
+  // "RootFS": {
+  //   "Type": "layers",
+  //   "Layers": [
+  //     "sha256:1834950e52ce4d5a88a1bbd131c537f4d0e56d10ff0dd69e66be3b7dfa9df7e6",
+  //     "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+  //     ]
+  // }
+
+  constructor (data: any, private image: any) {
+    Object.assign(this, data);
+  }
+
+  history (): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.image.history((err: any, stream: any) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(stream);
+      });
+    });
+  }
+}
+
 @provideSingleton(DockerFacade)
 export class DockerFacade {
   private dockerode: Dockerode;
@@ -282,6 +403,13 @@ export class DockerFacade {
     this.eventListeners.push(cb);
   }
 
+
+  listAllContainers (): Promise<Array<Container>> {
+    return this.fetchContainers({
+      all: true
+    });
+  }
+
   getContainer (containerId: string): Promise<Container> {
     return new Promise<Container>((resolve, reject) => {
       const container = this.dockerode.getContainer(containerId);
@@ -296,24 +424,6 @@ export class DockerFacade {
     });
   }
 
-  version(): Promise<Version> {
-    return new Promise<Version>((resolve, reject) => {
-      this.dockerode.version((err, data) => {
-        if(err) {
-          return reject(err);
-        }
-
-        resolve(data);
-      })
-    });
-  }
-
-  listAllContainers (): Promise<Array<Container>> {
-    return this.listContainers({
-      all: true
-    });
-  }
-
   removeContainer (containerId: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.dockerode.getContainer(containerId).remove({}, (err: any) => {
@@ -323,6 +433,54 @@ export class DockerFacade {
 
         resolve();
       });
+    });
+  }
+
+  listImages(): Promise<Array<Image>> {
+    return this.fetchImages();
+  }
+
+  listDanglingImages(): Promise<Array<Image>> {
+    return this.fetchImages({
+      filters: { dangling: [ 'true' ] }
+    });
+  }
+
+  getImage(imageId: string): Promise<Image> {
+    return new Promise<Image>((resolve, reject) => {
+      const image = this.dockerode.getImage(imageId);
+
+      image.inspect((err: Error, data: any) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(new Image(data, image));
+      });
+    });
+  }
+
+  removeImage (imageId: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.dockerode.getImage(imageId).remove({}, (err: any) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve();
+      });
+    });
+  }
+
+  version(): Promise<Version> {
+    return new Promise<Version>((resolve, reject) => {
+      this.dockerode.version((err, data) => {
+        if(err) {
+          return reject(err);
+        }
+
+        resolve(data);
+      })
     });
   }
 
@@ -350,7 +508,23 @@ export class DockerFacade {
   //   });
   // }
 
-  private async listContainers (options: Object = {}): Promise<Array<Container>> {
+  // TODO: change it back and fix ts
+  private async fetchImages(options: Object = {}): Promise<any> { // Promise<Array<Image>>
+    return Promise.all(
+      (await new Promise<Array<SummarizedImage>>((resolve, reject) => {
+      this.dockerode.listImages(options, (err: any, images: Array<SummarizedImage>) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(images);
+      });
+    }))
+        .map((image: SummarizedImage) => this.getImage(image.Id)));
+  }
+
+  // TODO: change it back and fix ts
+  private async fetchContainers (options: Object = {}): Promise<any>  { //Promise<Array<Container>>
     return Promise.all(
       (await new Promise<Array<SummarizedContainer>>((resolve, reject) => {
         this.dockerode.listContainers(options, (err: any, containers: Array<SummarizedContainer>) => {

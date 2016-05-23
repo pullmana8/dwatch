@@ -14,6 +14,10 @@ export const en_US: I18NLanguage = {
   'home.containers.supportingText': 'Get a list of your containers.',
   'home.containers.all': '{count, number} containers',
   'home.containers.running': '{count, number} online',
+  'home.images': 'Images',
+  'home.images.supportingText': 'A list of all images.',
+  'home.images.all': '{count, number} images',
+  'home.images.dangling': '{count, number} dangling',
   'home.system': 'System',
   'home.system.server-version': 'Server Version',
   'home.system.os': 'OS',
@@ -62,6 +66,37 @@ export const en_US: I18NLanguage = {
   'container.action.unpause': 'Unpause',
   'container.action.stop': 'Stop',
   'container.action.remove': 'Remove',
+
+  // images
+  'images.title': 'Images',
+  'images.th.id': 'Id',
+  'images.th.name': 'Name',
+  'images.th.tags': 'Tags',
+  'images.th.created': 'Created',
+  'images.th.size': 'Size',
+  'images.filter.showDangling': 'Show dangling',
+  'images.actions.gc': 'Remove dangling images',
+  'images.actions.gc.warning': 'Not all dangling images could be removed. They may be used by stopped containers.',
+
+  // image details
+  'image.title': 'Image {name}',
+  'image.header': 'Image',
+  'image.details': 'Details',
+  'image.detail.author': 'Author',
+  'image.detail.os': 'OS',
+  'image.detail.arch': 'Architecture',
+  'image.detail.cmd': 'Commands',
+  'image.detail.cwd': 'Working dir',
+  'image.detail.environment': 'Environment',
+  'image.detail.entrypoint': 'Entrypoint',
+  'image.detail.exposed-ports': 'Exposed ports',
+  'image.detail.volumes': 'Volumes',
+  'image.action.remove': 'Remove',
+  'image.action.remove.warning': 'Image could not be removed. Its may be used by a (stopped) container.',
+
+  // image history
+  'image.history.title': 'Creation history',
+  'image.history.created-by': 'By',
 
   //settings
   'settings.title': 'Settings',

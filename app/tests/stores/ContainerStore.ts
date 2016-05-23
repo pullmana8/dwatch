@@ -4,24 +4,10 @@ import { ContainerStore } from '../../src/stores/ContainerStore';
 import { ContainerModel } from '../../src/models/ContainerModel';
 import { DockerSwarmEvent, DockerEvent, DockerFacade } from '../../src/utils/DockerFacade';
 import { kernel } from '../../src/utils/IOC';
-import { bindMock } from '../mocks/Helper';
+import { bindMock, getDockerEvent, getDockerSwarmEvent } from '../mocks/Helper';
 import { Mock, expectExtensions } from 'emock';
 
 extend(expectExtensions);
-
-function getDockerEvent (id: string, action: string): any {
-  return {
-    id,
-    Action: action
-  };
-}
-
-function getDockerSwarmEvent (id: string, status: string): any {
-  return {
-    id,
-    status
-  };
-}
 
 describe('ContainerStore.ts', () => {
   let store: ContainerStore;
@@ -35,9 +21,7 @@ describe('ContainerStore.ts', () => {
     dockerFacadeMock = Mock.of(DockerFacade);
 
     bindMock(DockerFacade, dockerFacadeMock.mock);
-
-    kernel.unbind(ContainerStore);
-    kernel.bind(ContainerStore).to(ContainerStore).inSingletonScope();
+    
     store = kernel.get(ContainerStore);
   });
 
@@ -100,10 +84,10 @@ describe('ContainerStore.ts', () => {
     dockerFacadeMock.spyOn(x => x.getContainer(containerResponseMock.Id))
                     .andReturn(new Promise((resolve) => resolve(containerResponseMock)));
 
-    let loadContaienrSpy = spyOn(store, 'loadContainer').andCallThrough();
+    let loadContainerSpy = spyOn(store, 'loadContainer').andCallThrough();
 
     await store.loadContainer(containerResponseMock.Id);
-    (<any>loadContaienrSpy).reset();
+    (<any>loadContainerSpy).reset();
 
     expect(store.containers.size).toBe(1);
 
@@ -111,13 +95,13 @@ describe('ContainerStore.ts', () => {
       // test for local docker installation
       onEventCallback(getDockerEvent(containerResponseMock.Id, action));
       expect(store.loadContainer).toHaveBeenCalled();
-      (<any>loadContaienrSpy).reset();
+      (<any>loadContainerSpy).reset();
 
 
       // test for swarm cluster
       onEventCallback(getDockerSwarmEvent(containerResponseMock.Id, action));
       expect(store.loadContainer).toHaveBeenCalled();
-      (<any>loadContaienrSpy).reset();
+      (<any>loadContainerSpy).reset();
     });
 
     onEventCallback(getDockerEvent(containerResponseMock.Id, 'destroy'));
