@@ -7,7 +7,7 @@ import { injectIntl, InjectedIntlProps, FormattedMessage } from 'react-intl';
 import { UiStore } from '../../stores/UiStore';
 import { NOTIFICATION_TYPE, Notification, NotificationStore } from '../../stores/NotificationStore';
 import { inject } from '../../utils/IOC';
-import { transaction, action } from 'mobx/lib/mobx';
+import { transaction } from 'mobx/lib/mobx';
 import { ConnectionParametersModel, CONFIG_TYPE, PROTOCOL } from '../../models/ConnectionParametersModel';
 
 const styles = require('./../shared/Common.css');
@@ -85,7 +85,52 @@ export class Settings extends Component<{ intl: InjectedIntlProps }, {}> {
                 </ul>
               </div>
             </div>
+
             {this.renderOptions()}
+
+            <div className="mdl-grid">
+              <div className="mdl-cell mdl-cell--2-col mdl-cell--4-phone">
+                <FormattedMessage id="settings.update-notifications"/>
+              </div>
+              <div className="mdl-cell mdl-cell--10-col mdl-cell--4-phone">
+                <ul className={`${styles.inlineList}`}>
+                  <li>
+                    <MDLWrapper>
+                      <label className="mdl-radio mdl-js-radio mdl-js-ripple-effect"
+                             htmlFor="show_update_notifications">
+                        <input className="mdl-radio__button"
+                               id="show_update_notifications"
+                               name="update_notification"
+                               type="radio"
+                               value={true}
+                               onChange={() => this.settingsStore.showUpdateNotifications= true}
+                               checked={this.settingsStore.showUpdateNotifications}/>
+                      <span className="mdl-radio__label">
+                        <FormattedMessage id="yes"/>
+                      </span>
+                      </label>
+                    </MDLWrapper>
+                  </li>
+                  <li>
+                    <MDLWrapper>
+                      <label className="mdl-radio mdl-js-radio mdl-js-ripple-effect"
+                             htmlFor="hide_update_notifications">
+                        <input className="mdl-radio__button"
+                               id="hide_update_notifications"
+                               name="update_notification"
+                               type="radio"
+                               value={false}
+                               onChange={() => this.settingsStore.showUpdateNotifications = false}
+                               checked={!this.settingsStore.showUpdateNotifications}/>
+                      <span className="mdl-radio__label">
+                        <FormattedMessage id="no"/>
+                      </span>
+                      </label>
+                    </MDLWrapper>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div className={`mdl-card__actions mdl-card--border`}>
             <button className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
@@ -263,8 +308,7 @@ export class Settings extends Component<{ intl: InjectedIntlProps }, {}> {
       );
     }
   }
-
-  @action
+  
   private submit = async () => {
     const { formatMessage } = this.props.intl;
 

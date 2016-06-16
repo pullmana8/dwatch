@@ -4,12 +4,12 @@ import { FormattedMessage, FormattedRelative, FormattedNumber, injectIntl, Injec
 import { observer } from 'mobx-react/index';
 import { ImageModel } from '../../../models/ImageModel';
 import { normalizeImageId, parseBytes } from '../../../utils/Helper';
-import { UiStore } from '../../../stores/UiStore';
 import { inject } from '../../../utils/IOC';
 import { ImageStore } from '../../../stores/ImageStore';
 import { MDLWrapper } from '../../shared/MDLWrapper';
 import { AsyncButton } from '../../shared/AsyncButton';
 import { NotificationStore, NOTIFICATION_TYPE, Notification } from '../../../stores/NotificationStore';
+import { TwoColumnCardRow } from '../../shared/TwoColumnCardRow';
 
 const styles = require('./../../shared/Common.css');
 
@@ -21,9 +21,6 @@ interface ImageCardProps {
 @injectIntl
 @observer
 export class ImageCard extends Component<ImageCardProps, {}> {
-  @inject(UiStore)
-  private uiStore: UiStore;
-
   @inject(ImageStore)
   private imageStore: ImageStore;
 
@@ -43,67 +40,37 @@ export class ImageCard extends Component<ImageCardProps, {}> {
           </h2>
         </div>
         <div className="mdl-card__supporting-text">
+          <TwoColumnCardRow besides={true}
+                            left={
+                              <div>
+                                <TwoColumnCardRow left={<FormattedMessage id="images.th.id"/>}
+                                                  right={<strong>{normalizeImageId(image.id).substr(0, 12) }</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="images.th.id"/></li>
-            <li>
-              <strong>{normalizeImageId(image.id).substr(0, 12) }</strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="images.th.name"/>}
+                                                  right={<strong>{image.name}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="images.th.name"/></li>
-            <li>
-              <strong>{image.name}</strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="images.th.tags"/>}
+                                                  right={<strong>{image.tags ? image.tags.join(', ') : null}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="images.th.tags"/></li>
-            <li>
-              <strong>{image.tags ? image.tags.join(', ') : null}</strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="images.th.created"/>}
+                                                  right={<strong><FormattedRelative value={image.created.getTime() }/></strong>}/>
+                              </div>
+                            }
+                            right={
+                              <div>
+                                <TwoColumnCardRow left={<FormattedMessage id="images.th.size"/>}
+                                                  right={<strong><FormattedNumber value={size.size}/>{ ' ' + size.unit }</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="images.th.created"/></li>
-            <li>
-              <strong>
-                <FormattedRelative value={image.created.getTime() }/>
-              </strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.author"/>}
+                                                  right={<strong>{image.author}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="images.th.size"/></li>
-            <li>
-              <strong>
-                <FormattedNumber value={size.size}/>{ ' ' + size.unit }
-              </strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.os"/>}
+                                                  right={<strong>{image.os}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.author"/></li>
-            <li>
-              <strong>{image.author}</strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.os"/></li>
-            <li>
-              <strong>{image.os}</strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.arch"/></li>
-            <li>
-              <strong>{image.arch}</strong>
-            </li>
-          </ul>
-
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.arch"/>}
+                                                  right={<strong>{image.arch}</strong>}/>
+                              </div>
+                            }/>
         </div>
         <div className="mdl-layout-spacer"></div>
         <div className={`mdl-card__actions ${styles.flexActionBar} mdl-card--border`}>
@@ -126,14 +93,11 @@ export class ImageCard extends Component<ImageCardProps, {}> {
   }
 
   private handleRemoveClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
     try {
       await this.imageStore.removeImage(this.props.image.id);
       hashHistory.replace('/images');
-      finishTask();
     } catch (e) {
-      if(e.message.includes('HTTP') && e.message.includes('409')) {
+      if (e.message.includes('HTTP') && e.message.includes('409')) {
         const notification: Notification = {
           type: NOTIFICATION_TYPE.WARNING,
           message: this.props.intl.formatMessage({ id: 'image.action.remove.warning' }),
@@ -141,10 +105,8 @@ export class ImageCard extends Component<ImageCardProps, {}> {
         };
 
         this.notificationStore.notifications.push(notification);
-
-        finishTask();
       } else {
-        finishTask(e);
+        throw e;
       }
     }
   };

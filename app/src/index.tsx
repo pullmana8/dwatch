@@ -1,3 +1,4 @@
+/// <reference path="../../node_modules/inversify-dts/inversify/inversify.d.ts" />
 /// <reference path="../../node_modules/inversify-dts/inversify-binding-decorators/inversify-binding-decorators.d.ts" />
 
 import 'source-map-support/register';
@@ -59,4 +60,5 @@ ReactDOM.render(
     <Notifications/>
     { __DEVELOP__ ? <DevTools/> : null }
   </div>,
-  document.getElementById('root'));
+  document.getElementById('root')
+);

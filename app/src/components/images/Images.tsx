@@ -59,7 +59,7 @@ export class Images extends Component<ImagesProps, {}> {
 
 
   async componentWillReceiveProps (nextProps: ImagesProps) {
-    this.setFilterFromProps(this.props);
+    this.setFilterFromProps(nextProps);
 
     await this.loadImages();
   }
@@ -182,26 +182,23 @@ export class Images extends Component<ImagesProps, {}> {
   };
 
   private renderGCButton () {
-    if (this.showDanglingImages) {
-      return (
-        <li>
-          <MDLWrapper>
-            <AsyncButton onClick={this.removeDanglingImages}
-                         className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-              <FormattedMessage id='images.actions.gc'/>
-            </AsyncButton>
-          </MDLWrapper>
-        </li>
-      );
-    } else {
+    if (!this.showDanglingImages) {
       return null;
     }
+
+    return (
+      <li>
+        <MDLWrapper>
+          <AsyncButton onClick={this.removeDanglingImages}
+                       className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+            <FormattedMessage id='images.actions.gc'/>
+          </AsyncButton>
+        </MDLWrapper>
+      </li>
+    );
   }
 
-  @action
   private removeDanglingImages = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
     try {
       await Promise.all(this.danglingImages.map(image => this.imageStore.removeImage(image.id)));
     } catch (e) {
@@ -212,8 +209,6 @@ export class Images extends Component<ImagesProps, {}> {
       };
 
       this.notificationStore.notifications.push(notification);
-    } finally {
-      finishTask();
     }
   };
 }

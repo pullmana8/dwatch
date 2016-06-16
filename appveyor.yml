@@ -4,13 +4,13 @@ platform:
   - x64
 
 cache:
-  - node_modules
+  - node_modules -> package.json,appveyor.yml,app/package.json
 
 init:
   - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node 5 x64
+  - ps: Install-Product node 6 x64
   - git reset --hard HEAD
   - npm install
 

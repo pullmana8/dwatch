@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-import { UiStore } from '../../../stores/UiStore';
 import { MDLWrapper } from '../../shared/MDLWrapper';
 import { AsyncButton } from '../../shared/AsyncButton';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
@@ -8,14 +7,12 @@ import { ContainerModel, CONTAINER_RUN_STATE } from '../../../models/ContainerMo
 import { ContainerStore } from '../../../stores/ContainerStore';
 import { observer } from 'mobx-react/index';
 import { inject } from '../../../utils/IOC';
+import { TwoColumnCardRow } from '../../shared/TwoColumnCardRow';
 
 const styles = require('./../../shared/Common.css');
 
 @observer
 export class ContainerCard extends Component<{container: ContainerModel}, {}> {
-  @inject(UiStore)
-  private uiStore: UiStore;
-
   @inject(ContainerStore)
   private containerStore: ContainerStore;
 
@@ -31,46 +28,28 @@ export class ContainerCard extends Component<{container: ContainerModel}, {}> {
           </h2>
         </div>
         <div className="mdl-card__supporting-text">
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="containers.th.name"/></li>
-            <li>
-              <strong>{container.name}</strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="containers.th.id"/></li>
-            <li>
-              <strong>{container.id.substr(0, 12) }</strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="containers.th.created"/></li>
-            <li>
-              <strong>
-                <FormattedRelative value={container.created.getTime() }/>
-              </strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="containers.th.status"/></li>
-            <li>
-              <strong>
-                {CONTAINER_RUN_STATE[ container.state.runState ]}
-              </strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="containers.th.image"/></li>
-            <li>
-              <strong>
-                {container.image}
-              </strong>
-            </li>
-          </ul>
+          <TwoColumnCardRow besides={true}
+                            left={
+                               <div>
+                                 <TwoColumnCardRow left={<FormattedMessage id="containers.th.id"/>}
+                                                   right={<strong>{container.id.substr(0, 12) }</strong>}/>
+          
+                                 <TwoColumnCardRow left={<FormattedMessage id="containers.th.name"/>}
+                                                   right={<strong>{container.name}</strong>}/>
+          
+                                 <TwoColumnCardRow left={<FormattedMessage id="containers.th.created"/>}
+                                                   right={<strong><FormattedRelative value={container.created.getTime()}/></strong>}/>
+                               </div>
+                            }
+                            right={
+                               <div>
+                                 <TwoColumnCardRow left={<FormattedMessage id="containers.th.status"/>}
+                                                   right={<strong>{CONTAINER_RUN_STATE[ container.state.runState ]}</strong>}/>
+          
+                                 <TwoColumnCardRow left={<FormattedMessage id="containers.th.image"/>}
+                                                   right={<strong>{container.image}</strong>}/>
+                              </div>
+                            }/>
         </div>
         <div className={`mdl-card__actions ${styles.flexActionBar} mdl-card--border`}>
           {this.renderStartStopButton() }
@@ -143,58 +122,23 @@ export class ContainerCard extends Component<{container: ContainerModel}, {}> {
   }
 
   private handleStopClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
-    try {
-      await this.props.container.stop();
-      finishTask();
-    } catch (e) {
-      finishTask(e);
-    }
+    await this.props.container.stop();
   };
 
   private handleStartClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
-    try {
-      await this.props.container.start();
-      finishTask();
-    } catch (e) {
-      finishTask(e);
-    }
+    await this.props.container.start();
   };
 
   private handlePauseClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
-    try {
-      await this.props.container.pauseContainer();
-      finishTask();
-    } catch (e) {
-      finishTask(e);
-    }
+    await this.props.container.pauseContainer();
   };
 
   private handleUnPauseClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
-    try {
-      await this.props.container.unPauseContainer();
-      finishTask();
-    } catch (e) {
-      finishTask(e);
-    }
+    await this.props.container.unPauseContainer();
   };
 
   private handleRemoveClick = async () => {
-    const finishTask = this.uiStore.startAsyncTask();
-
-    try {
-      await this.containerStore.removeContainer(this.props.container.id);
-      hashHistory.replace('/containers');
-      finishTask();
-    } catch (e) {
-      finishTask(e);
-    }
+    await this.containerStore.removeContainer(this.props.container.id);
+    hashHistory.replace('/containers');
   };
 }

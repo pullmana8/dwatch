@@ -5,8 +5,7 @@ import { observer } from 'mobx-react/index';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { parseBytes } from '../../utils/Helper';
 import { ContainerModel, CONTAINER_RUN_STATE } from '../../models/ContainerModel';
-
-const styles = require('./../shared/Common.css');
+import { TwoColumnCardRow } from '../shared/TwoColumnCardRow';
 
 interface StatsStreamData {
   read: string;
@@ -24,7 +23,7 @@ interface StatsStreamData {
 }
 
 interface StatsProps {
-container: ContainerModel;
+  container: ContainerModel;
 }
 
 @observer
@@ -49,7 +48,7 @@ export class Stats extends DockerStreamComponent<StatsStreamData, StatsProps, {}
     return this.loadStream(nextProps);
   }
 
-  private async loadStream(props: StatsProps) {
+  private async loadStream (props: StatsProps) {
     if (props.container == null || (props.container != null && props.container.state.runState !== CONTAINER_RUN_STATE.RUNNING)) {
       this.destroyStream();
       return;
@@ -65,29 +64,23 @@ export class Stats extends DockerStreamComponent<StatsStreamData, StatsProps, {}
     const usedMemory = parseBytes(this.usedMemory);
     const totalMemory = parseBytes(this.totalMemory);
 
-    if (container != null && container.state.runState === CONTAINER_RUN_STATE.RUNNING) {
-      return (
-        <div>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="stats.cpu"/></li>
-            <li>
-              <strong><FormattedNumber value={this.cpuUsage} style='percent'/></strong>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="stats.memory"/></li>
-            <li>
-              <strong><FormattedNumber value={usedMemory.size}/>{ ' ' + usedMemory.unit } / <FormattedNumber
-                value={totalMemory.size}/>{ ' ' + totalMemory.unit }</strong>
-            </li>
-          </ul>
-        </div>
-      );
-    } else {
+    if (container == null || container.state.runState !== CONTAINER_RUN_STATE.RUNNING) {
       return <p><FormattedMessage id="no-data-available"/></p>;
     }
+
+    return (
+      <div>
+        <TwoColumnCardRow left={<FormattedMessage id="stats.cpu"/>}
+                          right={<strong><FormattedNumber value={this.cpuUsage} style='percent'/></strong>}/>
+
+        <TwoColumnCardRow left={<FormattedMessage id="stats.memory"/>}
+                          right={
+                            <strong>
+                              <FormattedNumber value={usedMemory.size}/>{ ' ' + usedMemory.unit } / <FormattedNumber value={totalMemory.size}/>{ ' ' + totalMemory.unit }
+                            </strong>
+                          }/>
+      </div>
+    );
   }
 
   onData (data: StatsStreamData): void {
@@ -102,6 +95,6 @@ export class Stats extends DockerStreamComponent<StatsStreamData, StatsProps, {}
   }
 
   onError (err: any): void {
-    console.log(err);
+    // swallow for now
   }
 }

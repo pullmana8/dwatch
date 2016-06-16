@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ContainerModel } from '../../../models/ContainerModel';
+import { TwoColumnCardRow } from '../../shared/TwoColumnCardRow';
 
 const styles = require('./../../shared/Common.css');
 
@@ -16,34 +17,23 @@ export class DetailCard extends Component<{container: ContainerModel}, {}> {
           </h2>
         </div>
         <div className="mdl-card__supporting-text">
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="container.detail.commands"/></li>
-            <li>
-              <strong>
-                {container.cmd.join(' ')}
-              </strong>
-            </li>
-          </ul>
+          <TwoColumnCardRow left={<FormattedMessage id="container.detail.commands"/>}
+                            right={<strong>{container.cmd.join(' ')}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="container.detail.environment"/></li>
-            <li>
-              <ul className={styles.unstyledList}>
-                { container.environemnt.map((environment, index) => (
-                  <li key={index}>
-                    <strong>{environment}</strong>
-                  </li>
-                )) }
-              </ul>
-            </li>
-          </ul>
+          <TwoColumnCardRow left={<FormattedMessage id="container.detail.environment"/>}
+                            right={
+                <ul className={styles.unstyledList}>
+                  { container.environment.map((environment, index) => (
+                    <li key={index}>
+                      <strong>{environment}</strong>
+                    </li>
+                  )) }
+                </ul>
+              }/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="container.detail.pwd"/></li>
-            <li>
-              {container.workingDir}
-            </li>
-          </ul>
+
+          <TwoColumnCardRow left={<FormattedMessage id="container.detail.pwd"/>}
+                            right={<strong>{container.workingDir}</strong>}/>
         </div>
       </div>
     );

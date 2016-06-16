@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { observer } from 'mobx-react/index';
 import { ImageModel } from '../../../models/ImageModel';
+import { TwoColumnCardRow } from '../../shared/TwoColumnCardRow';
 
 const styles = require('./../../shared/Common.css');
 
@@ -17,71 +18,63 @@ export class DetailCard extends Component<{image: ImageModel}, {}> {
           </h2>
         </div>
         <div className="mdl-card__supporting-text">
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.cmd"/></li>
-            <li>
-              <strong>{this.props.image.cmd.join(' ')}</strong>
-            </li>
-          </ul>
+          <TwoColumnCardRow besides={true}
+                            left={
+                              <div>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.cmd"/>}
+                                                right={<strong>{this.props.image.cmd.join(' ')}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.cwd"/></li>
-            <li>
-              <strong>{this.props.image.workingDir}</strong>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.cwd"/>}
+                                                  right={<strong>{this.props.image.workingDir}</strong>}/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.environment"/></li>
-            <li>
-              <ul className={styles.unstyledList}>
-                { this.props.image.environment.map((env, index) => (
-                  <li key={index}>
-                    <strong>{env}</strong>
-                  </li>
-                )) }
-              </ul>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.environment"/>}
+                                                  right={
+                                    <ul className={styles.unstyledList}>
+                                      { this.props.image.environment.map((env, index) => (
+                                        <li key={index}>
+                                          <strong>{env}</strong>
+                                        </li>
+                                      )) }
+                                    </ul>
+                                }/>
+                              </div>
+                            }
+                            right={
+                              <div>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.entrypoint"/>}
+                                                  right={
+                                    <ul className={styles.unstyledList}>
+                                      { this.props.image.entrypoints.map((entrypoint, index) => (
+                                        <li key={index}>
+                                          <strong>{entrypoint}</strong>
+                                        </li>
+                                      )) }
+                                    </ul>
+                                }/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.entrypoint"/></li>
-            <li>
-              <ul className={styles.unstyledList}>
-                { this.props.image.entrypoints.map((entrypoint, index) => (
-                  <li key={index}>
-                    <strong>{entrypoint}</strong>
-                  </li>
-                )) }
-              </ul>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.exposed-ports"/>}
+                                                  right={
+                                    <ul className={styles.unstyledList}>
+                                      { this.props.image.exposedPorts.map((port, index) => (
+                                        <li key={index}>
+                                          <strong>{port.port}/{port.protocol}</strong>
+                                        </li>
+                                      )) }
+                                    </ul>
+                                }/>
 
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.exposed-ports"/></li>
-            <li>
-              <ul className={styles.unstyledList}>
-                { this.props.image.exposedPorts.map((port, index) => (
-                  <li key={index}>
-                    <strong>{port.port}/{port.protocol}</strong>
-                  </li>
-                )) }
-              </ul>
-            </li>
-          </ul>
-
-          <ul className={`${styles.inlineList}`}>
-            <li><FormattedMessage id="image.detail.volumes"/></li>
-            <li>
-              <ul className={styles.unstyledList}>
-                { this.props.image.volumes.map((volume, index) => (
-                  <li key={index}>
-                    <strong>{volume}</strong>
-                  </li>
-                )) }
-              </ul>
-            </li>
-          </ul>
+                                <TwoColumnCardRow left={<FormattedMessage id="image.detail.volumes"/>}
+                                                  right={
+                                    <ul className={styles.unstyledList}>
+                                      { this.props.image.volumes.map((volume, index) => (
+                                        <li key={index}>
+                                          <strong>{volume}</strong>
+                                        </li>
+                                      )) }
+                                    </ul>
+                                 }/>
+                              </div>
+                            }/>
         </div>
       </div>
     );

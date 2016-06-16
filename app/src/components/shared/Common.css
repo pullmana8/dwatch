@@ -9,8 +9,9 @@
 }
 
 .inlineList > li {
-  display: inline;
-  margin-right: 10px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .flexActionBar  {
@@ -34,4 +35,12 @@
 .wrap {
   word-wrap: break-word;
   white-space: normal;
+}
+
+.firstWithoutMargin > div > :first-child {
+  margin-top: 0 !important;
+}
+
+.lastWithoutMargin > div > :last-child {
+  margin-bottom: 0 !important;
 }
